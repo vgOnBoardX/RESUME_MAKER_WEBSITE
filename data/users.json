@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": "fe99f670-9a3d-4785-be43-064aad0d8cd9",
+      "name": "Vashkar Ghosh",
+      "email": "vashkarghosh066@gmail.com",
+      "passwordHash": "afa2522fc8a647e1b589e99d6ffd4ba4:aec7c5be3c363e1142942f0b18c4d81d83f52677ac854e5ef10b76f5a1e18c38949c163a84431d712aed516ab61362f8778fe36c9cdeabcbea0afba79fef362c",
+      "createdAt": "2026-03-29T20:14:00.544Z"
+    },
+    {
+      "id": "c3c7fc4f-283d-40ff-8ec2-12bfce3c39d9",
+      "name": "Riddhi Das",
+      "email": "riddhidas3546@gmail.com",
+      "passwordHash": "fe416e8daf13448c9985c0b317a12036:7edfea754acf2bd7202ea43a67b01c5b797b63f7404e44a59cbdef2671151f8f846b6e4decda6109ed7c1c8018f8ad7a3153d1188a1be1260f31ab03ea51c06a",
+      "createdAt": "2026-03-29T20:19:25.147Z"
+    },
+    {
+      "id": "c6e86a7c-1552-44ed-9eb7-1eab1a6beaf5",
+      "name": "Allah R Maa Ke Chudi",
+      "email": "armkc@gmail.com",
+      "passwordHash": "4a2192a79c984ac08d521e217ab00f49:f9e8bb5a1d427d8a7f59240194218ac66371fa20367673497a797e5f0fa696ed912b190e301c57707e7f366bd8a00305f1cec339c0229c16138cc6327afb553c",
+      "createdAt": "2026-03-29T20:49:55.480Z"
+    },
+    {
+      "id": "0f354532-d9ba-425a-b4de-31744aa653d5",
+      "name": "sss",
+      "email": "ssss",
+      "passwordHash": "7774020f5f324aeca0f7e16f64c283b9:161fb6b81f16703f7d1b978a3d27f4855b72a5c1025ae90ba3a3e9156c23a04a536103863737b85dd124347692f3b2a66c2217e8aa7271091854b287f46f3db4",
+      "createdAt": "2026-03-29T21:40:48.453Z"
+    }
+  ]
+}
