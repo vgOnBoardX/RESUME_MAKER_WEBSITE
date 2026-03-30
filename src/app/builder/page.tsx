@@ -195,9 +195,6 @@ export default function BuilderPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-bold">Resume Builder</h1>
           <div className="flex gap-2 text-sm">
-            <Link href="/dashboard" className="rounded-lg border border-white/20 px-3 py-2 hover:bg-white/10">
-              Dashboard
-            </Link>
             <Link href="/analyze" className="rounded-lg border border-white/20 px-3 py-2 hover:bg-white/10">
               Upload & Analyze
             </Link>
@@ -247,7 +244,7 @@ export default function BuilderPage() {
 
         <section
           ref={previewRef}
-          className="resume-print rounded-2xl border border-white/10 bg-white p-6 text-zinc-900 shadow-2xl print:rounded-none print:border-none print:shadow-none"
+          className="resume-print rounded-2xl border border-white/10 bg-white p-6 text-zinc-900 shadow-xl print:border-0 print:shadow-none"
         >
           <div className="mb-4 flex justify-end print:hidden">
             <button
@@ -273,22 +270,43 @@ export default function BuilderPage() {
             ))}
           </div>
 
-          <div className="mt-5"><h3 className="text-lg font-semibold">Summary</h3><p className="mt-1 text-sm leading-6">{resume.summary}</p></div>
-          <div className="mt-5">
-            <h3 className="text-lg font-semibold">Skills</h3>
+          <div className="mt-4">
+            <h3 className="font-semibold">Summary</h3>
+            <p className="mt-1 text-sm leading-relaxed">{resume.summary}</p>
+          </div>
+          <div className="mt-4">
+            <h3 className="font-semibold">Skills</h3>
             <div className="mt-2 flex flex-wrap gap-2">
               {skillArray.map((skill) => {
                 const url = resume.skillHubLinks[skill.toLowerCase()];
                 return url ? (
-                  <a key={skill} href={url} target="_blank" rel="noreferrer" className="rounded-full border border-zinc-300 px-3 py-1 text-sm text-fuchsia-700 hover:border-fuchsia-400">{skill}</a>
+                  <a
+                    key={skill}
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-zinc-300 px-2.5 py-0.5 text-xs text-fuchsia-700"
+                  >
+                    {skill}
+                  </a>
                 ) : (
-                  <span key={skill} className="rounded-full bg-zinc-100 px-3 py-1 text-sm">{skill}</span>
+                  <span key={skill} className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs">
+                    {skill}
+                  </span>
                 );
               })}
             </div>
           </div>
-          <div className="mt-5"><h3 className="text-lg font-semibold">Experience</h3><div className="mt-2 space-y-1 text-sm">{resume.experience.split("\n").map((line, index) => <p key={`${line}-${index}`}>{line}</p>)}</div></div>
-          <div className="mt-5"><h3 className="text-lg font-semibold">Education</h3><p className="mt-1 text-sm">{resume.education}</p></div>
+          <div className="mt-4">
+            <h3 className="font-semibold">Experience</h3>
+            <div className="mt-1 text-sm whitespace-pre-line leading-relaxed">
+              {resume.experience}
+            </div>
+          </div>
+          <div className="mt-4">
+            <h3 className="font-semibold">Education</h3>
+            <p className="text-sm">{resume.education}</p>
+          </div>
         </section>
       </div>
     </main>

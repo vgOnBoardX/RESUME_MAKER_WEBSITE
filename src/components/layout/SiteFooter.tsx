@@ -14,16 +14,6 @@ export function SiteFooter() {
           <p className="text-sm font-medium text-zinc-300">Product</p>
           <ul className="mt-3 space-y-2 text-sm text-zinc-500">
             <li>
-              <Link href="/dashboard" className="hover:text-fuchsia-400">
-                Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link href="/" className="hover:text-fuchsia-400">
-                Studio
-              </Link>
-            </li>
-            <li>
               <Link href="/builder" className="hover:text-fuchsia-400">
                 Full builder
               </Link>

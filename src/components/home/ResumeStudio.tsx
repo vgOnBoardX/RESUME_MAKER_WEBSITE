@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { ChangeEvent, FormEvent, useCallback, useMemo, useRef, useState } from "react";
 import { AtsDashboardPlaceholder } from "@/components/ats/AtsDashboardPlaceholder";
 import { CircularAtsGauge } from "@/components/ats/CircularAtsGauge";
@@ -118,11 +117,7 @@ function ResumePreview({
       </div>
       <div className="mt-4">
         <h3 className="font-semibold">Experience</h3>
-        <div className="mt-1 space-y-1 text-sm">
-          {resume.experience.split("\n").map((line, i) => (
-            <p key={`${i}-${line.slice(0, 20)}`}>{line}</p>
-          ))}
-        </div>
+        <p className="mt-1 whitespace-pre-line text-sm leading-relaxed">{resume.experience}</p>
       </div>
       <div className="mt-4">
         <h3 className="font-semibold">Education</h3>
@@ -281,7 +276,7 @@ export function ResumeStudio() {
 
   return (
     <div className="flex flex-col">
-      <section className="border-b border-white/10 bg-gradient-to-b from-zinc-900/50 to-zinc-950 px-4 py-10 print:hidden sm:px-6">
+      <section className="border-b border-white/10 bg-linear-to-b from-zinc-900/50 to-zinc-950 px-4 py-10 print:hidden sm:px-6">
         <div className="mx-auto max-w-7xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-400">Resume Studio</p>
           <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
@@ -292,12 +287,6 @@ export function ResumeStudio() {
             portfolio, etc.), and ranked improvements to maximize your score.
           </p>
           <nav className="mx-auto mt-6 flex flex-wrap justify-center gap-3 text-sm" aria-label="Page sections">
-            <Link
-              href="/dashboard"
-              className="rounded-full border border-fuchsia-500/40 bg-fuchsia-950/30 px-4 py-2 text-fuchsia-200 hover:bg-fuchsia-950/50"
-            >
-              Dashboard
-            </Link>
             <a href="#resume-workspace" className="rounded-full border border-white/15 px-4 py-2 text-zinc-300 hover:bg-white/10">
               Resume & upload
             </a>
