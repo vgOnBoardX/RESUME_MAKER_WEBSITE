@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AtsFeedback, ResumeData } from "@/types/resume";
@@ -83,6 +83,8 @@ export default function BuilderPage() {
   const [loadingAi, setLoadingAi] = useState(false);
   const [newSkill, setNewSkill] = useState("");
   const [newSkillUrl, setNewSkillUrl] = useState("");
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const previewRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -163,6 +165,26 @@ export default function BuilderPage() {
     setNewSkillUrl("");
   };
 
+  const handleDownloadPdf = useCallback(async () => {
+    const el = previewRef.current;
+    if (!el) {
+      window.print();
+      return;
+    }
+    el.scrollIntoView({ block: "nearest" });
+    setPdfLoading(true);
+    try {
+      const { downloadResumeAsPdf } = await import("@/lib/download-resume-pdf");
+      await downloadResumeAsPdf(el, resume.fullName);
+    } catch {
+      await new Promise((r) => setTimeout(r, 100));
+      el.scrollIntoView({ block: "start" });
+      window.print();
+    } finally {
+      setPdfLoading(false);
+    }
+  }, [resume.fullName]);
+
   if (!ready) {
     return <main className="min-h-screen bg-zinc-950 p-10 text-zinc-100">Checking session...</main>;
   }
@@ -183,7 +205,7 @@ export default function BuilderPage() {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-6 p-6 lg:grid-cols-2">
+      <div className="resume-print-grid mx-auto grid max-w-7xl gap-6 p-6 lg:grid-cols-2 print:block print:w-full">
         <section className="rounded-2xl border border-white/10 bg-zinc-900/70 p-5 backdrop-blur print:hidden">
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <input className="rounded-lg border border-white/10 bg-zinc-800 p-2.5 text-base font-medium" value={resume.fullName} onChange={(e) => updateResume("fullName", e.target.value)} placeholder="Full name" />
@@ -223,10 +245,18 @@ export default function BuilderPage() {
           )}
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white p-6 text-zinc-900 shadow-2xl print:rounded-none print:border-none print:shadow-none">
+        <section
+          ref={previewRef}
+          className="resume-print rounded-2xl border border-white/10 bg-white p-6 text-zinc-900 shadow-2xl print:rounded-none print:border-none print:shadow-none"
+        >
           <div className="mb-4 flex justify-end print:hidden">
-            <button onClick={() => window.print()} className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700">
-              Download Resume (PDF)
+            <button
+              type="button"
+              onClick={() => void handleDownloadPdf()}
+              disabled={pdfLoading}
+              className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60"
+            >
+              {pdfLoading ? "Preparing PDF…" : "Download Resume (PDF)"}
             </button>
           </div>
           <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">{resume.fullName}</h2>

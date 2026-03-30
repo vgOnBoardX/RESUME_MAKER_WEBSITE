@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useCallback, useMemo, useRef, useState } from "react";
 import { AtsDashboardPlaceholder } from "@/components/ats/AtsDashboardPlaceholder";
 import { CircularAtsGauge } from "@/components/ats/CircularAtsGauge";
 import { ProfileDimensionChart } from "@/components/ats/ProfileDimensionChart";
@@ -145,6 +145,8 @@ export function ResumeStudio() {
   const [loadingAi, setLoadingAi] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const previewRef = useRef<HTMLDivElement>(null);
 
   const [newSkill, setNewSkill] = useState("");
   const [newSkillUrl, setNewSkillUrl] = useState("");
@@ -251,6 +253,32 @@ export function ResumeStudio() {
     }
   };
 
+  const handleDownloadPdf = useCallback(async () => {
+    if (tab !== "build") {
+      setTab("build");
+      await new Promise((r) => setTimeout(r, 350));
+    }
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const root = previewRef.current;
+    const el = (root?.querySelector(".resume-print") ?? root) as HTMLElement | null;
+    if (!el) {
+      window.print();
+      return;
+    }
+    el.scrollIntoView({ block: "nearest" });
+    setPdfLoading(true);
+    try {
+      const { downloadResumeAsPdf } = await import("@/lib/download-resume-pdf");
+      await downloadResumeAsPdf(el, resume.fullName);
+    } catch {
+      await new Promise((r) => setTimeout(r, 100));
+      el.scrollIntoView({ block: "start" });
+      window.print();
+    } finally {
+      setPdfLoading(false);
+    }
+  }, [tab, resume.fullName]);
+
   return (
     <div className="flex flex-col">
       <section className="border-b border-white/10 bg-gradient-to-b from-zinc-900/50 to-zinc-950 px-4 py-10 print:hidden sm:px-6">
@@ -280,8 +308,8 @@ export function ResumeStudio() {
         </div>
       </section>
 
-      <section id="resume-workspace" className="mx-auto w-full max-w-7xl scroll-mt-24 px-4 py-8 print:hidden sm:px-6">
-        <div className="flex flex-wrap gap-2 rounded-xl border border-white/10 bg-zinc-900/40 p-1">
+      <section id="resume-workspace" className="mx-auto w-full max-w-7xl scroll-mt-24 px-4 py-8 sm:px-6">
+        <div className="flex flex-wrap gap-2 rounded-xl border border-white/10 bg-zinc-900/40 p-1 print:hidden">
           <button
             type="button"
             onClick={() => setTab("build")}
@@ -303,7 +331,7 @@ export function ResumeStudio() {
         </div>
 
         {tab === "build" && (
-          <div className="mt-8 grid gap-8 lg:grid-cols-2">
+          <div className="resume-print-grid mt-8 grid gap-8 lg:grid-cols-2 print:block print:w-full">
             <div className="space-y-4 rounded-2xl border border-white/10 bg-zinc-900/50 p-5 print:hidden">
               <h2 className="text-lg font-semibold text-white">Your details</h2>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -336,13 +364,20 @@ export function ResumeStudio() {
                 <button type="button" onClick={runBuilderAts} disabled={loadingBuild} className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium hover:bg-emerald-500 disabled:opacity-60">
                   {loadingBuild ? "Scoring…" : "Run ATS on builder"}
                 </button>
-                <button type="button" onClick={() => window.print()} className="rounded-lg border border-white/20 px-4 py-2 text-sm hover:bg-white/10">
-                  Download PDF
+                <button
+                  type="button"
+                  onClick={() => void handleDownloadPdf()}
+                  disabled={pdfLoading}
+                  className="rounded-lg border border-white/20 px-4 py-2 text-sm hover:bg-white/10 disabled:opacity-60"
+                >
+                  {pdfLoading ? "Preparing PDF…" : "Download PDF"}
                 </button>
               </div>
             </div>
 
-            <ResumePreview resume={resume} skillArray={skillArray} otherLinkArray={otherLinkArray} />
+            <div ref={previewRef}>
+              <ResumePreview resume={resume} skillArray={skillArray} otherLinkArray={otherLinkArray} />
+            </div>
           </div>
         )}
 
@@ -386,10 +421,11 @@ export function ResumeStudio() {
               </button>
               <button
                 type="button"
-                onClick={() => window.print()}
-                className="rounded-lg border border-white/20 px-4 py-2.5 text-sm hover:bg-white/10"
+                onClick={() => void handleDownloadPdf()}
+                disabled={pdfLoading}
+                className="rounded-lg border border-white/20 px-4 py-2.5 text-sm hover:bg-white/10 disabled:opacity-60"
               >
-                Download PDF (builder preview)
+                {pdfLoading ? "Preparing PDF…" : "Download PDF"}
               </button>
             </div>
           </div>
